@@ -32,8 +32,9 @@ This document describes the TidyBot simulation environment for ROS 2, designed f
 
 ```bash
 # Inside Docker container
+cd ~/Documents/tidybot_platform
 source /opt/ros/jazzy/setup.bash
-source ~/tidybot_platform/install/setup.bash
+source install/setup.bash
 
 # Launch simulation with LiDAR
 ros2 launch tidybot_description launch_sim_robot.launch.py base_mode:=velocity
@@ -41,6 +42,8 @@ ros2 launch tidybot_description launch_sim_robot.launch.py base_mode:=velocity
 # Launch without LiDAR
 ros2 launch tidybot_description launch_sim_robot.launch.py base_mode:=velocity lidar:=false
 ```
+
+**Note:** If .bashrc is already configured (after first setup), the `source` commands are automatic.
 
 ### Launch Arguments
 
