@@ -4,6 +4,24 @@
 
 This document describes the TidyBot simulation environment for ROS 2, designed for smooth handover between simulation and hardware teams.
 
+## Changelog
+
+### 2026-03-15: LiDAR Support Added
+
+**Changes:**
+- Added GPU LiDAR sensor to simulation (RPLiDAR A1M8-R6 equivalent)
+- Position: Base front center (xyz=0.3, 0, 0.15 relative to base_link)
+- Topics: `/scan` (LaserScan), `/scan/points` (PointCloud2)
+
+**Modified Files:**
+- `urdf/tidybot.xacro` - Added lidar argument
+- `urdf/bot.xacro` - Updated load_bot macro
+- `urdf/base/tidybot++/base_kinova_macro.xacro` - Added lidar_link and lidar_joint
+- `urdf/tidybot.gazebo.xacro` - Added GPU LiDAR plugin
+- `launch/launch_sim_robot.launch.py` - Added lidar argument and topic bridges
+
+**Branch:** `sim/lidar`
+
 ## Environment
 
 | Component | Version |
@@ -15,17 +33,36 @@ This document describes the TidyBot simulation environment for ROS 2, designed f
 
 ## Quick Start
 
-### Docker Container
+### Option 1: Use Pre-built Docker Image (Recommended)
+
+1. Download the Docker image tar file:
+   - **File:** `tidybot_platform_sim-lidar.tar.gz` (3.4GB)
+   - **Shared via:** Google Drive / OneDrive (contact maintainer)
+
+2. Load the image:
+   ```bash
+   docker load < tidybot_platform_sim-lidar.tar.gz
+   docker tag tidybot_platform:latest shunyatadano/tidybot_platform:sim-lidar
+   ```
+
+3. Clone the repository:
+   ```bash
+   git clone -b sim/lidar https://github.com/shunyatadano/tidybot_ros.git
+   cd tidybot_ros
+   ```
+
+4. Start container:
+   ```bash
+   ./docker/tidybot/run.sh
+   ```
+
+### Option 2: Build from Source
 
 ```bash
-# Build image (first time)
+git clone -b sim/lidar https://github.com/shunyatadano/tidybot_ros.git
+cd tidybot_ros
 ./docker/tidybot/build.sh
-
-# Start container
 ./docker/tidybot/run.sh
-
-# Or restart container
-./docker/tidybot/run.sh restart
 ```
 
 ### Simulation Launch
@@ -153,20 +190,24 @@ main                    # Stable release (sync with upstream/main)
 └── hardware/develop   # Hardware-specific changes
 ```
 
-## Docker Image Distribution
+## Distribution Links
 
-### Pull from Docker Hub
+| Resource | URL |
+|----------|-----|
+| **Repository (sim/lidar branch)** | https://github.com/shunyatadano/tidybot_ros/tree/sim/lidar |
+| **Upstream Repository** | https://github.com/roahmlab/tidybot_platform |
+| **Docker Image (tar)** | `tidybot_platform_sim-lidar.tar.gz` (3.4GB) - Contact maintainer for link |
+
+### Creating Docker Image tar File
+
+If you need to share the Docker image:
 
 ```bash
-docker pull shunyatadano/tidybot_platform:sim-lidar
-docker tag shunyatadano/tidybot_platform:sim-lidar tidybot_platform:latest
-```
+# Create tar file
+docker save tidybot_platform:latest | gzip > tidybot_platform_sim-lidar.tar.gz
 
-### Build from Source
-
-```bash
-cd docker/tidybot
-./build.sh
+# Load tar file (on receiving side)
+docker load < tidybot_platform_sim-lidar.tar.gz
 ```
 
 ## Troubleshooting
@@ -179,6 +220,19 @@ xhost +local:docker
 
 # Check DISPLAY variable
 echo $DISPLAY
+```
+
+### Package not found error
+
+```bash
+# Inside container, ensure workspace is sourced
+cd ~/Documents/tidybot_platform
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+# If still not found, rebuild
+colcon build --packages-select tidybot_description
+source install/setup.bash
 ```
 
 ### LiDAR topics not publishing
@@ -199,5 +253,6 @@ ros2 run controller_manager spawner <controller_name>
 
 ## Contact
 
-- Repository: https://github.com/shunyatadano/tidybot_ros
-- Upstream: https://github.com/roahmlab/tidybot_platform
+- **Maintainer:** Shunya Tadano
+- **Repository:** https://github.com/shunyatadano/tidybot_ros
+- **Upstream:** https://github.com/roahmlab/tidybot_platform
