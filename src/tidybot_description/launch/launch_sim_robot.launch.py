@@ -44,6 +44,7 @@ def launch_robot_description(context, *args, **kwargs):
             PathJoinSubstitution([tidybot_pkg, "urdf", "tidybot.xacro"]),
             " hardware_plugin:=gz_ros2_control/GazeboSimSystem",
             " base_mode:=", LaunchConfiguration("base_mode"),
+            " lidar:=", LaunchConfiguration("lidar"),
         ],
     ).perform(context)
     return [
@@ -100,6 +101,13 @@ def generate_launch_description():
             default_value="empty",
             choices=["empty", "office", "warehouse", "fetch_coke", "fetch_cube"],
             description="Path to the world file to load in Gazebo",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "lidar",
+            default_value="true",
+            description="Enable LiDAR sensor in simulation",
         )
     )
     ld.add_action(
@@ -166,6 +174,8 @@ def generate_launch_description():
                 "/arm_camera/depth_image@sensor_msgs/msg/Image[gz.msgs.Image",
                 "/base_camera/image@sensor_msgs/msg/Image[gz.msgs.Image",
                 "/base_camera/depth_image@sensor_msgs/msg/Image[gz.msgs.Image",
+                "/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
+                "/scan/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked",
                 "/world/empty/create@ros_gz_interfaces/srv/SpawnEntity",
                 "/world/empty/control@ros_gz_interfaces/srv/ControlWorld",
             ],

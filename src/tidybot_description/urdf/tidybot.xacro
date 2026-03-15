@@ -8,13 +8,14 @@
     <xacro:arg name="gripper" default="robotiq_2f_85" />
     <xacro:arg name="base_mode" default="position" />
     <xacro:arg name="vision" default="true" />
+    <xacro:arg name="lidar" default="true" />
     <xacro:arg name="prefix" default="" />
     <xacro:arg name="ros2_control_config_path" default="$(find tidybot_description)/config/tidybot_controllers.yaml"/>
 
     <xacro:include filename="$(find tidybot_description)/urdf/bot.xacro" />
 
     <!-- load the robot -->
-    <xacro:load_bot arm="$(arg arm)" gripper="$(arg gripper)" vision="$(arg vision)" prefix="$(arg prefix)" />
+    <xacro:load_bot arm="$(arg arm)" gripper="$(arg gripper)" vision="$(arg vision)" lidar="$(arg lidar)" prefix="$(arg prefix)" />
 
     <!-- configure ros2_control joints -->
     <xacro:include filename="$(find tidybot_description)/urdf/tidybot.ros2_control.xacro" />
@@ -22,6 +23,6 @@
 
     <!-- load gazebo plugins -->
     <xacro:include filename="$(find tidybot_description)/urdf/tidybot.gazebo.xacro" />
-    <xacro:load_gazebo_plugins config_path="$(arg ros2_control_config_path)" prefix="$(arg prefix)" arm="$(arg arm)" vision="$(arg vision)" />
+    <xacro:load_gazebo_plugins config_path="$(arg ros2_control_config_path)" prefix="$(arg prefix)" arm="$(arg arm)" vision="$(arg vision)" lidar="$(arg lidar)" />
 
 </robot>

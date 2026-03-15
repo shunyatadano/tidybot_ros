@@ -2,7 +2,7 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <xacro:macro name="load_bot" params="arm gripper vision prefix">
+    <xacro:macro name="load_bot" params="arm gripper vision lidar prefix">
 
         <!-- load the corresponding macros -->
         <xacro:include filename="$(find tidybot_description)/urdf/arms/${arm}/${arm}_macro.xacro" />
@@ -10,7 +10,7 @@
         <xacro:include filename="$(find tidybot_description)/urdf/base/tidybot++/base_kinova_macro.xacro" />
 
         <!-- load the base -->
-        <xacro:load_base parent="" prefix="${prefix}" vision="${vision}" />
+        <xacro:load_base parent="" prefix="${prefix}" vision="${vision}" lidar="${lidar}" />
 
         <!-- load the arm -->
         <xacro:load_arm parent="${last_base_link}" vision="${vision}" prefix="${prefix}">
