@@ -194,20 +194,61 @@ main                    # Stable release (sync with upstream/main)
 
 | Resource | URL |
 |----------|-----|
-| **Repository (sim/lidar branch)** | https://github.com/shunyatadano/tidybot_ros/tree/sim/lidar |
+| **Repository (sim/develop branch)** | https://github.com/shunyatadano/tidybot_ros/tree/sim/develop |
 | **Upstream Repository** | https://github.com/roahmlab/tidybot_platform |
-| **Docker Image (tar)** | `tidybot_platform_sim-lidar.tar.gz` (3.4GB) - Contact maintainer for link |
+| **Docker Image (tar)** | `tidybot_platform_sim-lidar.tar.gz` (3.4GB) - See Discord for download link |
 
-### Creating Docker Image tar File
+---
 
-If you need to share the Docker image:
+## Sharing Docker Image (for Team Distribution)
+
+### Creating tar File
 
 ```bash
-# Create tar file
+# Create tar file (on host machine)
 docker save tidybot_platform:latest | gzip > tidybot_platform_sim-lidar.tar.gz
 
-# Load tar file (on receiving side)
+# Result: ~3.4GB file
+```
+
+### Sharing via Discord
+
+1. Upload tar file to Google Drive or OneDrive
+2. Share the link on Discord
+
+**Example Discord message:**
+
+```
+@everyone TidyBotシミュレーション環境（LiDAR追加版）を共有します
+
+📦 Docker Image: tidybot_platform_sim-lidar.tar.gz (3.4GB)
+🔗 Download: [Google Drive / OneDrive link]
+
+■ 受け取り手順
+1. ダウンロード
+2. docker load < tidybot_platform_sim-lidar.tar.gz
+3. git clone -b sim/develop https://github.com/shunyatadano/tidybot_ros.git
+4. ./docker/tidybot/run.sh
+
+■ ドキュメント
+https://github.com/shunyatadano/tidybot_ros/blob/sim/develop/docs/handover/README.md
+```
+
+### Receiving Side Setup
+
+```bash
+# 1. Load Docker image
 docker load < tidybot_platform_sim-lidar.tar.gz
+
+# 2. Clone repository
+git clone -b sim/develop https://github.com/shunyatadano/tidybot_ros.git
+cd tidybot_ros
+
+# 3. Start container
+./docker/tidybot/run.sh
+
+# 4. Launch simulation (inside container)
+ros2 launch tidybot_description launch_sim_robot.launch.py base_mode:=velocity
 ```
 
 ## Troubleshooting
